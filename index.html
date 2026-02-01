@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Vuoi essere il mio Valentino? 💘</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #ffb6c1, #ff69b4);
+            font-family: 'Comic Sans MS', cursive;
+            overflow: hidden;
+        }
+
+        #container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #e91e63;
+        }
+
+        button {
+            font-size: 1.3em;
+            padding: 15px 30px;
+            margin: 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #yes {
+            background: #4caf50;
+            color: white;
+        }
+
+        #no {
+            background: #f44336;
+            color: white;
+            position: absolute;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <h1>Vuoi essere il mio Valentino? 💖</h1>
+    <button id="yes">SÌ 😍</button>
+</div>
+
+<button id="no">NO 🙈</button>
+<canvas id="fireworks"></canvas>
+
+<script>
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Bottone NO che scappa
+    document.addEventListener("mousemove", (e) => {
+        const rect = noBtn.getBoundingClientRect();
+        const dist = Math.hypot(
+            e.clientX - (rect.left + rect.width / 2),
+            e.clientY - (rect.top + rect.height / 2)
+        );
+
+        if (dist < 100) {
+            noBtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+            noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+        }
+    });
+
+    // Fuochi d'artificio
+    function firework() {
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
+                life: 100
+            });
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(0,0,0,0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                ctx.fillStyle = "hsl(" + Math.random() * 360 + ",100%,50%)";
+                ctx.fillRect(p.x, p.y, 4, 4);
+            });
+
+            if (particles.some(p => p.life > 0)) {
+                requestAnimationFrame(animate);
+            }
+        }
+        animate();
+    }
+
+    // Click su SÌ
+    yesBtn.onclick = () => {
+        document.body.innerHTML = "<h1 style='color:white;font-size:4em;'>EVVIVA! 💕🎆</h1>";
+        document.body.appendChild(canvas);
+        firework();
+    };
+</script>
+
+</body>
+</html>
